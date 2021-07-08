@@ -3,9 +3,16 @@ import loginImage from '../../assets/images/login.svg'
 import { Link } from 'react-router-dom'
 import AuthService from '../../services/authService'
 
+import { useDispatch } from 'react-redux'
+import { login } from '../../store/actions/auth'
+import { useHistory } from 'react-router'
+
 import './Auth.scss'
 
 const Login = () => {
+
+    const dispatch = useDispatch()
+    const history = useHistory()
 
     const [email, setEmail] = useState('john.doe@gmail.com')
     const [password, setPassword] = useState('secret')
@@ -13,9 +20,10 @@ const Login = () => {
     const submitForm = (e) => {  
         e.preventDefault()
 
-        AuthService.login({email,password}).then(res => console.log(res))
-        
+        dispatch(login({email, password}, history))
+
     }
+    
     return (
         <div id='auth-container'>
             <div id='auth-card'>
@@ -33,7 +41,7 @@ const Login = () => {
                                     value={email}
                                     onChange={e => setEmail(e.target.value)}
                                     required='required'
-                                    type='text'
+                                    type='email'
                                     placeholder="Email" />
                             </div>
 
