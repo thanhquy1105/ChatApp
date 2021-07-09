@@ -8,7 +8,19 @@ function useSocket(user, dispatch) {
     socket.emit("join", user);
 
     socket.on("typing", (user) => {
-      console.log("Event", user);
+      console.log("typing", user);
+    });
+
+    socket.on("friends", (friends) => {
+      console.log("friends", friends);
+    });
+
+    socket.on("online", (user) => {
+      console.log("online", user);
+    });
+
+    socket.on("offline", (user) => {
+      console.log("offline", user);
     });
   }, [dispatch]);
 }

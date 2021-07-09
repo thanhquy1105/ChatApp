@@ -2,6 +2,7 @@ const socketIo = require("socket.io");
 const { sequelize } = require("../models");
 
 const users = new Map();
+const userSockets = new Map();
 
 const SocketServer = (server) => {
   const io = socketIo(server, {
@@ -20,16 +21,18 @@ const SocketServer = (server) => {
         existingUser.sockets = [...existingUser.sockets, ...[socket.id]];
         users.set(user.id, existingUser);
         sockets = [...existingUser.sockets, ...[socket.id]];
+        userSockets.set(socket.id, user.id);
       } else {
         users.set(user.id, { id: user.id, sockets: [socket.id] });
         sockets.push(socket.id);
+        userSockets.set(socket.id, user.id);
       }
 
       const onlineFriends = []; //ids
 
       const chatters = await getChatters(user.id); // query
 
-      console.log(chatters);
+      //console.log(chatters);
 
       // notify his friends that user is now online
       for (let i = 0; i < chatters.length; i++) {
@@ -50,6 +53,39 @@ const SocketServer = (server) => {
           io.to(socket).emit("friends", onlineFriends);
         } catch (e) {}
       });
+    });
+
+    socket.on("disconnect", async () => {
+      if (userSockets.has(socket.id)) {
+        const user = users.get(userSockets.get(socket.id));
+
+        if (user.sockets.length > 1) {
+          user.sockets = user.sockets.filter((sock) => {
+            if (sock !== socket.id) return true;
+
+            userSockets.delete(sock);
+            return false;
+          });
+
+          users.set(user.id, user);
+        } else {
+          const chatters = await getChatters(user.id);
+
+          // notify his friends that user is now offline
+          for (let i = 0; i < chatters.length; i++) {
+            if (users.has(chatters[i])) {
+              users.get(chatters[i]).sockets.forEach((socket) => {
+                try {
+                  io.to(socket).emit("offline", user);
+                } catch (e) {}
+              });
+            }
+          }
+
+          userSockets.delete(socket.id);
+          users.delete(user.id);
+        }
+      }
     });
   });
 };
