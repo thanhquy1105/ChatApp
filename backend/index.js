@@ -9,6 +9,7 @@ const http = require("http");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
+app.options("*", cors());
 app.use(router);
 
 app.use(express.static(__dirname + "/public"));
@@ -20,6 +21,6 @@ const server = http.createServer(app);
 const SocketServer = require("./socket");
 SocketServer(server);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
