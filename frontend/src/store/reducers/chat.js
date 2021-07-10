@@ -26,6 +26,7 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         currentChat: payload,
       };
+
     case FRIENDS_ONLINE: {
       const chatsCopy = state.chats.map((chat) => {
         return {
@@ -45,6 +46,76 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         chats: chatsCopy,
+      };
+    }
+
+    case FRIEND_ONLINE: {
+      let currentChatCopy = { ...state.currentChat };
+
+      const chatsCopy = state.chats.map((chat) => {
+        const Users = chat.Users.map((user) => {
+          if (user.id === parseInt(payload.id)) {
+            return {
+              ...user,
+              status: "online",
+            };
+          }
+
+          return user;
+        });
+
+        if (chat.id === currentChatCopy.id) {
+          currentChatCopy = {
+            ...currentChatCopy,
+            Users,
+          };
+        }
+
+        return {
+          ...chat,
+          Users,
+        };
+      });
+
+      return {
+        ...state,
+        chats: chatsCopy,
+        currentChat: currentChatCopy,
+      };
+    }
+
+    case FRIEND_OFFLINE: {
+      let currentChatCopy = { ...state.currentChat };
+
+      const chatsCopy = state.chats.map((chat) => {
+        const Users = chat.Users.map((user) => {
+          if (user.id === parseInt(payload.id)) {
+            return {
+              ...user,
+              status: "offline",
+            };
+          }
+
+          return user;
+        });
+
+        if (chat.id === currentChatCopy.id) {
+          currentChatCopy = {
+            ...currentChatCopy,
+            Users,
+          };
+        }
+
+        return {
+          ...chat,
+          Users,
+        };
+      });
+
+      return {
+        ...state,
+        chats: chatsCopy,
+        currentChat: currentChatCopy,
       };
     }
     default: {
