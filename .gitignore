@@ -10,4 +10,4 @@ tmp/nanoc/
 crash.log
 
 # Modules
-backend/node_modules
+node_modules

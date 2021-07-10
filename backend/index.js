@@ -15,6 +15,12 @@ app.use(router);
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+});
+
 const port = config.appPort;
 
 const server = http.createServer(app);
