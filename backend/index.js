@@ -17,16 +17,10 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 
 if (process.env.NODE_ENV === "production") {
-  console.log(123);
-  // app.use(express.static(path.join(__dirname, "../frontend/build")));
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-  // app.get("*", (req, res) => {
-  //   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-  // });
-
-  app.use(express.static(path.resolve(process.cwd(), "frontend/build")));
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(process.cwd(), "frontend/build/index.html"));
+    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
   });
 }
 
