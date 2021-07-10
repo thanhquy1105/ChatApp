@@ -15,13 +15,15 @@ app.use(router);
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/uploads"));
 
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+if (process.env.NODE_ENV === "PRODUCTION") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-});
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+  });
+}
 
-const port = config.appPort;
+const port = process.env.APP_PORT || config.appPort;
 
 const server = http.createServer(app);
 const SocketServer = require("./socket");
