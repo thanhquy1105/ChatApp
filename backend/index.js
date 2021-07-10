@@ -1,28 +1,15 @@
-const express = require("express");
+const app = require("./app");
 const config = require("./config/app");
 const router = require("./router");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const app = express();
 const http = require("http");
-const path = require("path");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.options("*", cors());
 app.use(router);
-
-app.use(express.static(__dirname + "/public"));
-app.use(express.static(__dirname + "/uploads"));
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
-  });
-}
 
 const port = process.env.APP_PORT || config.appPort;
 

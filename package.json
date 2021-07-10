@@ -7,7 +7,6 @@
     "start": "nodemon backend/index.js",
     "dev": "SET NODE_ENV=development& nodemon backend/index.js",
     "prod": "SET NODE_ENV=production& nodemon backend/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "ThanhQuy",
