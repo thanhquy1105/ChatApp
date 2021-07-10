@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
             ? content
             : process.env.NODE_ENV === "development"
             ? `${config.appUrl}:${config.appPort}/chat/${id}/${content}`
-            : `${config.appUrtPro}:${config.appPort}/chat/${id}/${content}`;
+            : `${config.appUrtPro}/chat/${id}/${content}`;
         },
       },
       chatId: DataTypes.INTEGER,
