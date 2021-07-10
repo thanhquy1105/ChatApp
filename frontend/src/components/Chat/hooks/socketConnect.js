@@ -5,6 +5,8 @@ import {
   offlineFriend,
   onlineFriend,
   onlineFriends,
+  receivedMessage,
+  setSocket,
 } from "../../../store/actions/chat";
 
 function useSocket(user, dispatch) {
@@ -12,6 +14,8 @@ function useSocket(user, dispatch) {
     dispatch(fetchChats())
       .then((res) => {
         const socket = socketIOClient.connect("http://127.0.0.1:3000");
+
+        dispatch(setSocket(socket));
 
         socket.emit("join", user);
 
@@ -32,6 +36,11 @@ function useSocket(user, dispatch) {
         socket.on("offline", (friend) => {
           console.log("offline", friend);
           dispatch(offlineFriend(friend));
+        });
+
+        socket.on("received", (message) => {
+          console.log("received", message);
+          dispatch(receivedMessage(message, user.id));
         });
       })
       .catch((err) => console.log(err));
