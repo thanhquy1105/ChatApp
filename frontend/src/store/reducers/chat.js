@@ -1,4 +1,10 @@
-import { FETCH_CHATS, SET_CURRENT_CHAT } from "../actions/chat";
+import {
+  FETCH_CHATS,
+  SET_CURRENT_CHAT,
+  FRIENDS_ONLINE,
+  FRIEND_OFFLINE,
+  FRIEND_ONLINE,
+} from "../actions/chat";
 
 const initialState = {
   chats: [],
@@ -20,6 +26,27 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         currentChat: payload,
       };
+    case FRIENDS_ONLINE: {
+      const chatsCopy = state.chats.map((chat) => {
+        return {
+          ...chat,
+          Users: chat.Users.map((user) => {
+            if (payload.includes(user.id)) {
+              return {
+                ...user,
+                status: "online",
+              };
+            }
+            return user;
+          }),
+        };
+      });
+
+      return {
+        ...state,
+        chats: chatsCopy,
+      };
+    }
     default: {
       return state;
     }
