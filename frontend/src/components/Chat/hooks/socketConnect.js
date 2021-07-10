@@ -13,7 +13,7 @@ function useSocket(user, dispatch) {
   useEffect(() => {
     dispatch(fetchChats())
       .then((res) => {
-        const socket = socketIOClient.connect("http://127.0.0.1:3000");
+        const socket = socketIOClient.connect(window.location.origin);
 
         dispatch(setSocket(socket));
 
