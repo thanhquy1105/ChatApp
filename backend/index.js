@@ -11,7 +11,7 @@ app.use(cors());
 app.options("*", cors());
 app.use(router);
 
-const port = process.env.APP_PORT || config.appPort;
+const port = process.env.PORT || config.appPort;
 
 const server = http.createServer(app);
 const SocketServer = require("./socket");
