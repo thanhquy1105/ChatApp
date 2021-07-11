@@ -2,7 +2,7 @@ import API from "./api";
 
 const AuthService = {
   login: async (data) => {
-    return await API.post("/login", data)
+    return await API.post("auth/login", data)
       .then(({ data }) => {
         setHeadersAndStorage(data);
         return data;
@@ -14,7 +14,7 @@ const AuthService = {
   },
 
   register: async (data) => {
-    return await API.post("/register", data)
+    return await API.post("auth/register", data)
       .then(({ data }) => {
         setHeadersAndStorage(data);
         return data;
