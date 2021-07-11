@@ -2,7 +2,7 @@ import API from "./api";
 
 const ChatService = {
   fetchChats: () => {
-    return API.get("/chats")
+    return API.get("/chats/index")
       .then(({ data }) => {
         console.log("chat Service", data);
         return data;
