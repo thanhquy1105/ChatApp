@@ -8,7 +8,7 @@ const userSockets = new Map();
 const SocketServer = (server) => {
   const io = socketIo(server, {
     cors: {
-      origin: "http://localhost:3001",
+      origin: "*",
       methods: ["GET", "POST"],
     },
   });

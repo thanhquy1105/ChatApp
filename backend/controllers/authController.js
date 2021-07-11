@@ -5,12 +5,15 @@ const config = require("../config/app");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+
   console.log(email);
   console.log(process.env.NODE_ENV);
   console.log(process.env.PORT);
-  console.log(process.env.APP_URL);
+  console.log(process.env.APP_URL_PRO);
 
   try {
+    console.log("query");
+
     // find the user
     const user = await User.findOne({
       where: {
