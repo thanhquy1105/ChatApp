@@ -1,9 +1,9 @@
 import API from "./api";
 
 const ChatService = {
-  fetchChats: () => {
+  fetchChats: async () => {
     console.log("Chat.js chatactions fetchChats");
-    return API.get("/chats/index")
+    return await API.get("/chats/index")
       .then(({ data }) => {
         console.log("chat Service data", data);
         return data;

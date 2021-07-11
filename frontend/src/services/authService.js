@@ -1,8 +1,8 @@
 import API from "./api";
 
 const AuthService = {
-  login: (data) => {
-    return API.post("/login", data)
+  login: async (data) => {
+    return await API.post("/login", data)
       .then(({ data }) => {
         setHeadersAndStorage(data);
         return data;
@@ -13,8 +13,8 @@ const AuthService = {
       });
   },
 
-  register: (data) => {
-    return API.post("/register", data)
+  register: async (data) => {
+    return await API.post("/register", data)
       .then(({ data }) => {
         setHeadersAndStorage(data);
         return data;
@@ -31,11 +31,11 @@ const AuthService = {
     localStorage.removeItem("token");
   },
 
-  updateProfile: (data) => {
+  updateProfile: async (data) => {
     const headers = {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     };
-    return API.post("/users/update", data, headers)
+    return await API.post("/users/update", data, headers)
       .then(({ data }) => {
         console.log("response data update", data);
 
