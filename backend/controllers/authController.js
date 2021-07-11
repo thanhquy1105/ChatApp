@@ -1,59 +1,60 @@
-const User = require('../models').User
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const config = require('../config/app')
-  
-exports.login = async(req,res) => {
-    
-    const {email,password} = req.body;
+const User = require("../models").User;
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const config = require("../config/app");
 
-    try {
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+  console.log(email);
+  console.log(process.env.NODE_ENV);
+  console.log(process.env.PORT);
+  console.log(process.env.APP_URL);
 
-        const secret = require('crypto').randomBytes(64).toString('hex')
-        
-        // find the user
-        const user = await User.findOne({
-            where: {
-                email
-            }
-        })
+  try {
+    // find the user
+    const user = await User.findOne({
+      where: {
+        email,
+      },
+    });
 
-        // check if user found
-        if (!user) return res.status(404).json({ message: 'User not found!'})
+    console.log(user);
 
-        // check if password matches
-        if (!bcrypt.compareSync(password, user.password)) return res.status(401).json({ message: 'Incorrect password'})
+    // check if user found
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
-        // generate auth token
-        const userWithToken = generateToken(user.get({raw: true}))
-        userWithToken.user.avatar = user.avatar
-        
-        return res.send(userWithToken)
+    // check if password matches
+    if (!bcrypt.compareSync(password, user.password))
+      return res.status(401).json({ message: "Incorrect password" });
 
-    } catch (e) {
-        return res.status(500).json({ message: e.message})
-    }
+    // generate auth token
+    const userWithToken = generateToken(user.get({ raw: true }));
+    userWithToken.user.avatar = user.avatar;
 
-} 
+    console.log(userWithToken);
 
-exports.register = async(req,res) => {
-    
-    try {
-        const user = await User.create(req.body)
+    return res.send(userWithToken);
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+};
 
-        const userWithToken = generateToken(user.get({raw: true}))
-        
-        return res.send(userWithToken)
-    } catch (e) {
-        return res.status(500).json({message: e.message})
-    }
-    
-}
+exports.register = async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+
+    const userWithToken = generateToken(user.get({ raw: true }));
+
+    return res.send(userWithToken);
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
+  }
+};
 
 const generateToken = (user) => {
-    delete user.password
+  delete user.password;
 
-    const token = jwt.sign(user, config.appKey, {expiresIn: 86400})
+  const token = jwt.sign(user, config.appKey, { expiresIn: 86400 });
 
-    return {...{user}, ...{token}}
-}
+  return { ...{ user }, ...{ token } };
+};
