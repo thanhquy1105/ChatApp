@@ -9,9 +9,10 @@ export const SET_SOCKET = "SET_SOCKET";
 export const RECEIVED_MESSAGE = "RECEIVED_MESSAGE";
 
 export const fetchChats = () => (dispatch) => {
+  console.log("Chat.js actions fetchChats");
   return ChatService.fetchChats()
     .then((data) => {
-      console.log(data);
+      console.log("Chat actions data", data);
       data.forEach((chat) => {
         console.log(chat);
         chat.Users.forEach((user) => {
@@ -24,6 +25,8 @@ export const fetchChats = () => (dispatch) => {
       return data;
     })
     .catch((err) => {
+      console.log("Chat actions err", err);
+
       throw err;
     });
 };
