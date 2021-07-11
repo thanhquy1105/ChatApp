@@ -13,7 +13,9 @@ function useSocket(user, dispatch) {
   useEffect(() => {
     dispatch(fetchChats())
       .then((res) => {
-        const socket = socketIOClient.connect();
+        const socket = socketIOClient.connect(
+          "https://immessenger.herokuapp.com/"
+        );
 
         dispatch(setSocket(socket));
 
