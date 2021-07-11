@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
           const url =
             process.env.NODE_ENV === "development"
               ? `${config.appUrl}:${config.appPort}`
-              : `${config.appUrtPro}:${config.appPort}`;
-
+              : `${config.appUrtPro}`;
+          console.log(url);
           if (!avatar) {
             return `${url}/${this.getDataValue("gender")}.svg`;
           }

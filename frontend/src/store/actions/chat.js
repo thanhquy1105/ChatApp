@@ -11,7 +11,9 @@ export const RECEIVED_MESSAGE = "RECEIVED_MESSAGE";
 export const fetchChats = () => (dispatch) => {
   return ChatService.fetchChats()
     .then((data) => {
+      console.log(data);
       data.forEach((chat) => {
+        console.log(chat);
         chat.Users.forEach((user) => {
           user.status = "offline";
         });
