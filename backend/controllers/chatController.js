@@ -8,6 +8,7 @@ const { Op } = require("sequelize");
 const { sequelize } = require("../models");
 
 exports.index = async (req, res) => {
+  console.log("chat index 1", req);
   const user = await User.findOne({
     where: {
       id: req.user.id,
@@ -38,6 +39,7 @@ exports.index = async (req, res) => {
       },
     ],
   });
+  console.log("chat index 1", user);
 
   return res.json(user.Chats);
 };
