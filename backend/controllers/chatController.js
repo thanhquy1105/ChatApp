@@ -9,39 +9,44 @@ const { sequelize } = require("../models");
 
 exports.index = async (req, res) => {
   console.log("chat index 1", req);
-  const user = await User.findOne({
-    where: {
-      id: req.user.id,
-    },
-    include: [
-      {
-        model: Chat,
-        include: [
-          {
-            model: User,
-            where: {
-              [Op.not]: {
-                id: req.user.id,
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+      include: [
+        {
+          model: Chat,
+          include: [
+            {
+              model: User,
+              where: {
+                [Op.not]: {
+                  id: req.user.id,
+                },
               },
             },
-          },
-          {
-            model: Message,
-            include: [
-              {
-                model: User,
-              },
-            ],
-            limit: 20,
-            order: [["id", "DESC"]],
-          },
-        ],
-      },
-    ],
-  });
-  console.log("chat index 1", user);
+            {
+              model: Message,
+              include: [
+                {
+                  model: User,
+                },
+              ],
+              limit: 20,
+              order: [["id", "DESC"]],
+            },
+          ],
+        },
+      ],
+    });
+    console.log("chat index 1", user);
 
-  return res.json(user.Chats);
+    return res.json(user.Chats);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ status: "Error", message: e.message });
+  }
 };
 
 exports.create = async (req, res) => {
