@@ -1,15 +1,7 @@
 const app = require("./app");
 const config = require("./config/app");
-const router = require("./router");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const http = require("http");
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cors());
-app.options("*", cors());
-app.use(router);
+const http = require("http");
 
 const port = process.env.PORT || config.appPort;
 
