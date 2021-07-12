@@ -82,6 +82,7 @@ const SocketServer = (server) => {
         message.User = message.fromUser;
         message.fromUserId = message.fromUser.id;
         message.id = savedMessage.id;
+        message.message = savedMessage.message;
 
         delete message.fromUser;
 
@@ -90,6 +91,7 @@ const SocketServer = (server) => {
         });
       } catch (e) {}
     });
+
     socket.on("disconnect", async () => {
       if (userSockets.has(socket.id)) {
         const user = users.get(userSockets.get(socket.id));
@@ -121,6 +123,16 @@ const SocketServer = (server) => {
           users.delete(user.id);
         }
       }
+    });
+
+    socket.on("typing", (message) => {
+      message.toUserId.forEach((id) => {
+        if (users.has(id)) {
+          users.get(id).sockets.forEach((socket) => {
+            io.to(socket).emit("typing", message);
+          });
+        }
+      });
     });
   });
 };

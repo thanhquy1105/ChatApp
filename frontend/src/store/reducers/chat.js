@@ -6,6 +6,7 @@ import {
   FRIEND_ONLINE,
   SET_SOCKET,
   RECEIVED_MESSAGE,
+  SENDER_TYPING,
 } from "../actions/chat";
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   socket: {},
   newMessage: { chatId: null, seen: null },
   scrollBottom: 0,
+  senderTyping: { typing: false },
 };
 
 const chatReducer = (state = initialState, action) => {
@@ -140,14 +142,14 @@ const chatReducer = (state = initialState, action) => {
 
       const chatsCopy = state.chats.map((chat) => {
         if (message.chatId === chat.id) {
-          if (message.User.id === userId) {
-            scrollBottom++;
-          } else {
-            newMessage = {
-              chatId: chat.id,
-              seen: false,
-            };
-          }
+          //if (message.User.id === userId) {
+          scrollBottom++;
+          //} else {
+          newMessage = {
+            chatId: chat.id,
+            seen: false,
+            //  };
+          };
 
           if (message.chatId === currentChatCopy.id) {
             currentChatCopy = {
@@ -170,6 +172,7 @@ const chatReducer = (state = initialState, action) => {
           chats: chatsCopy,
           currentChat: currentChatCopy,
           newMessage,
+          senderTyping: { typing: false },
         };
       }
 
@@ -178,9 +181,26 @@ const chatReducer = (state = initialState, action) => {
         chats: chatsCopy,
         currentChat: currentChatCopy,
         newMessage,
+        senderTyping: { typing: false },
         scrollBottom,
       };
     }
+
+    case SENDER_TYPING: {
+      if (payload.typing) {
+        return {
+          ...state,
+          senderTyping: payload,
+          scrollBottom: state.scrollBottom + 1,
+        };
+      }
+
+      return {
+        ...state,
+        senderTyping: payload,
+      };
+    }
+
     default: {
       return state;
     }

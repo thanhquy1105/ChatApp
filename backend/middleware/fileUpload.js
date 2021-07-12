@@ -65,3 +65,31 @@ exports.userFile = ((req, res, next) => {
 
   return multer({ storage, fileFilter }).single("avatar");
 })();
+
+exports.chatFile = ((req, res, next) => {
+  const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      const { id } = req.body;
+      const dest = `backend/uploads/chat/${id}`;
+
+      fs.access(dest, (error) => {
+        // if doesn't exist
+        if (error) {
+          console.log(" not exist");
+          return fs.mkdir(dest, (error) => {
+            console.log(error);
+            cb(error, dest);
+          });
+        } else {
+          console.log("exist");
+          // it does exist
+
+          return cb(null, dest);
+        }
+      });
+    },
+    filename: generateFileName,
+  });
+
+  return multer({ storage, fileFilter }).single("image");
+})();
