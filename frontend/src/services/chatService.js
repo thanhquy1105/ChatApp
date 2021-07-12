@@ -27,6 +27,23 @@ const ChatService = {
         throw err;
       });
   },
+
+  paginateMessages: async (id, page) => {
+    return await API.get("/chats/messages", {
+      params: {
+        id,
+        page,
+      },
+    })
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("Chat pagination err", err);
+
+        throw err;
+      });
+  },
 };
 
 export default ChatService;
