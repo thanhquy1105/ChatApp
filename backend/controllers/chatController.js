@@ -8,7 +8,6 @@ const { Op } = require("sequelize");
 const { sequelize } = require("../models");
 
 exports.index = async (req, res) => {
-  console.log("chat index 1", req);
   try {
     const user = await User.findOne({
       where: {
@@ -40,11 +39,9 @@ exports.index = async (req, res) => {
         },
       ],
     });
-    console.log("chat index 1", user);
 
     return res.json(user.Chats);
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ status: "Error", message: e.message });
   }
 };

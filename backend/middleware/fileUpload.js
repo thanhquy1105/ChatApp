@@ -33,18 +33,14 @@ exports.userFile = ((req, res, next) => {
     destination: function (req, file, cb) {
       const { id } = req.user;
       const dest = `backend/uploads/user/${id}`;
-      console.log(id);
-      console.log(dest);
+
       fs.access(dest, (error) => {
         // if doesn't exist
         if (error) {
-          console.log(" not exist");
           return fs.mkdir(dest, (error) => {
-            console.log(error);
             cb(error, dest);
           });
         } else {
-          console.log("exist");
           // it does exist
           fs.readdir(dest, (error, files) => {
             if (error) throw error;
@@ -75,13 +71,10 @@ exports.chatFile = ((req, res, next) => {
       fs.access(dest, (error) => {
         // if doesn't exist
         if (error) {
-          console.log(" not exist");
           return fs.mkdir(dest, (error) => {
-            console.log(error);
             cb(error, dest);
           });
         } else {
-          console.log("exist");
           // it does exist
 
           return cb(null, dest);

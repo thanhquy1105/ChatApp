@@ -31,7 +31,7 @@ const Navbar = () => {
     for (const key in form) {
       formData.append(key, form[key]);
     }
-    console.log("update profile", formData);
+
     dispatch(updateProfile(formData)).then(() => setShowProfileModal(false));
   };
   return (

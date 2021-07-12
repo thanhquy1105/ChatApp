@@ -37,8 +37,6 @@ const AuthService = {
     };
     return await API.post("/users/update", data, headers)
       .then(({ data }) => {
-        console.log("response data update", data);
-
         localStorage.setItem("user", JSON.stringify(data));
         return data;
       })

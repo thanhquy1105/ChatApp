@@ -10,12 +10,9 @@ export const RECEIVED_MESSAGE = "RECEIVED_MESSAGE";
 export const SENDER_TYPING = "SENDER_TYPING";
 
 export const fetchChats = () => (dispatch) => {
-  console.log("Chat.js actions fetchChats");
   return ChatService.fetchChats()
     .then((data) => {
-      console.log("Chat actions data", data);
       data.forEach((chat) => {
-        console.log(chat);
         chat.Users.forEach((user) => {
           user.status = "offline";
         });

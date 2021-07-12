@@ -11,17 +11,11 @@ const API = axios.create({
 
 API.interceptors.response.use(
   (res) => {
-    console.log("api res", res);
-
     return res;
   },
 
   (err) => {
-    console.log("api err", err);
-
     if (err.response.status !== 401) {
-      console.log("api err", err);
-
       throw err;
     }
 

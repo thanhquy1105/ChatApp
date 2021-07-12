@@ -10,14 +10,13 @@ export const login = (params, history) => (dispatch) => {
       }
     })
     .catch((err) => {
-      //console.log(err)
+      console.log(err);
     });
 };
 
 export const register = (params, history) => (dispatch) => {
   return AuthService.register(params)
     .then((data) => {
-      console.log(data);
       dispatch({ type: REGISTER, payload: data });
       history.push("/");
     })
@@ -32,7 +31,6 @@ export const logout = () => (dispatch) => {
 export const updateProfile = (params) => (dispatch) => {
   return AuthService.updateProfile(params)
     .then((data) => {
-      console.log("response data update", data);
       dispatch({ type: UPDATE_PROFILE, payload: data });
     })
     .catch((err) => {
