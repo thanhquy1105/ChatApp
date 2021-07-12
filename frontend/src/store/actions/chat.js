@@ -9,6 +9,7 @@ export const SET_SOCKET = "SET_SOCKET";
 export const RECEIVED_MESSAGE = "RECEIVED_MESSAGE";
 export const SENDER_TYPING = "SENDER_TYPING";
 export const PAGINATE_MESSAGES = "PAGINATE_MESSAGES";
+export const INCREMENT_SCROLL = "INCREMENT_SCROLL";
 
 export const fetchChats = () => (dispatch) => {
   return ChatService.fetchChats()
@@ -73,4 +74,8 @@ export const paginateMessages = (id, page) => (dispatch) => {
     .catch((err) => {
       throw err;
     });
+};
+
+export const incrementScroll = () => (dispatch) => {
+  dispatch({ type: INCREMENT_SCROLL });
 };

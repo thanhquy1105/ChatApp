@@ -1,25 +1,32 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import ChatService from "../../../../services/chatService";
 import { Picker } from "emoji-mart";
+import { incrementScroll } from "../../../../store/actions/chat";
 
 import "emoji-mart/css/emoji-mart.css";
 import "./MessageInput.scss";
+
 var startPosition;
 var emojiLength = 0;
 
 const MessageInput = ({ chat }) => {
+  const dispatch = useDispatch();
   const fileUpload = useRef();
   const msgInput = useRef();
 
   const [message, setMessage] = useState("");
   const [image, setImage] = useState("");
+
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [justClickEmoji, setJustClickEmoji] = useState(false);
+  const [showNewMessageNotification, setShowNewMessageNotification] =
+    useState(false);
 
   const user = useSelector((state) => state.authReducer.user);
   const socket = useSelector((state) => state.chatReducer.socket);
+  const newMessage = useSelector((state) => state.chatReducer.newMessage);
 
   const handleMessage = (e) => {
     const value = e.target.value;
@@ -61,6 +68,7 @@ const MessageInput = ({ chat }) => {
     setMessage("");
     setImage("");
     setShowEmojiPicker(false);
+    setShowNewMessageNotification(false);
     // send message with socket
     socket.emit("message", msg);
   };
@@ -105,10 +113,41 @@ const MessageInput = ({ chat }) => {
     );
   };
 
+  useEffect(() => {
+    const msgBox = document.getElementById("msg-box");
+
+    if (
+      !newMessage.seen &&
+      newMessage.chatId === chat.id &&
+      msgBox.scrollHeight !== msgBox.clientHeight
+    ) {
+      if (msgBox.scrollTop > msgBox.scrollHeight * 0.3) {
+        console.log(123);
+        dispatch(incrementScroll());
+      } else {
+        setShowNewMessageNotification(true);
+      }
+    } else {
+      setShowNewMessageNotification(false);
+    }
+  }, [newMessage, dispatch]);
+
+  const showNewMessage = () => {
+    dispatch(incrementScroll());
+    setShowNewMessageNotification(false);
+  };
+
   return (
     <div id="input-container">
       <div id="image-upload-container">
-        <div></div>
+        <div>
+          {showNewMessageNotification ? (
+            <div id="message-notification" onClick={showNewMessage}>
+              <FontAwesomeIcon icon="bell" className="fa-icon" />
+              <p className="m-0">New message</p>
+            </div>
+          ) : null}
+        </div>
 
         <div id="image-upload">
           {image && image.name ? (

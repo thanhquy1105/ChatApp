@@ -8,6 +8,7 @@ import {
   RECEIVED_MESSAGE,
   SENDER_TYPING,
   PAGINATE_MESSAGES,
+  INCREMENT_SCROLL,
 } from "../actions/chat";
 
 const initialState = {
@@ -143,14 +144,14 @@ const chatReducer = (state = initialState, action) => {
 
       const chatsCopy = state.chats.map((chat) => {
         if (message.chatId === chat.id) {
-          //if (message.User.id === userId) {
-          scrollBottom++;
-          //} else {
-          newMessage = {
-            chatId: chat.id,
-            seen: false,
-            //  };
-          };
+          if (message.User.id === userId) {
+            scrollBottom++;
+          } else {
+            newMessage = {
+              chatId: chat.id,
+              seen: false,
+            };
+          }
 
           if (message.chatId === currentChatCopy.id) {
             currentChatCopy = {
@@ -232,6 +233,13 @@ const chatReducer = (state = initialState, action) => {
         currentChat: currentChatCopy,
       };
     }
+
+    case INCREMENT_SCROLL:
+      return {
+        ...state,
+        scrollBottom: state.scrollBottom + 1,
+        newMessage: { chatId: null, seen: true },
+      };
 
     default: {
       return state;
