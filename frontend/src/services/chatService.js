@@ -44,6 +44,22 @@ const ChatService = {
         throw err;
       });
   },
+
+  searchUsers: async (term) => {
+    return await API.get("/users/search-users", {
+      params: {
+        term,
+      },
+    })
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("users search err", err);
+
+        throw err;
+      });
+  },
 };
 
 export default ChatService;
