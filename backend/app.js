@@ -1,6 +1,14 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+
+app.use(cors());
+app.options("*", cors());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const auth = require("./routes/auth");
 const chat = require("./routes/chat");
