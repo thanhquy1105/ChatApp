@@ -210,6 +210,64 @@ exports.imageUpload = (req, res) => {
   return res.status(500).json("No image uploaded");
 };
 
+exports.addUserToGroup = async (req, res) => {
+  try {
+    const { chatId, userId } = req.body;
+    const chat = await Chat.findOne({
+      where: {
+        id: chatId,
+      },
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: Message,
+          include: [
+            {
+              model: User,
+            },
+          ],
+          limit: 20,
+          order: [["id", "DESC"]],
+        },
+      ],
+    });
+
+    chat.Messages.reverse();
+
+    //check if already in the group
+    chat.Users.forEach((user) => {
+      if (user.id === userId) {
+        return res.status(403).json({ message: "User already in the group" });
+      }
+    });
+
+    await ChatUser.create({ chatId, userId });
+
+    const newChatter = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    chat.Users.forEach((user) => {
+      delete user.dataValues.password;
+    });
+
+    delete newChatter.dataValues.password;
+
+    if (chat.type === "dual") {
+      chat.type = "group";
+      chat.save();
+    }
+
+    return res.json({ chat, newChatter });
+  } catch (err) {
+    return res.status(500).json({ status: "Error", message: e.message });
+  }
+};
+
 exports.deleteChat = async (req, res) => {
   try {
     await Chat.destroy({

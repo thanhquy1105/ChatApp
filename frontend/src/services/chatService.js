@@ -72,6 +72,18 @@ const ChatService = {
         throw err;
       });
   },
+
+  addFriendToGroupChat: async (userId, chatId) => {
+    return await API.post("/chats/add-user-to-group", { userId, chatId })
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log("create chat err", err);
+
+        throw err;
+      });
+  },
 };
 
 export default ChatService;

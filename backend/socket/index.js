@@ -118,6 +118,39 @@ const SocketServer = (server) => {
       } catch (e) {}
     });
 
+    socket.on("add-user-to-group", ({ chat, newChatter }) => {
+      if (users.has(newChatter.id)) {
+        newChatter.status = "online";
+      } else newChatter.status = "offline";
+
+      //old users
+      chat.Users.forEach((user, index) => {
+        if (users.has(user.id)) {
+          chat.Users[index].status = "online";
+          users.get(user.id).sockets.forEach((socket) => {
+            try {
+              io.to(socket).emit("added-user-to-group", {
+                chat,
+                chatters: [newChatter],
+              });
+            } catch (e) {}
+          });
+        }
+      });
+
+      //send to new chatter
+      if (users.has(newChatter.id)) {
+        users.get(newChatter.id).sockets.forEach((socket) => {
+          try {
+            io.to(socket).emit("added-user-to-group", {
+              chat,
+              chatters: chat.Users,
+            });
+          } catch (e) {}
+        });
+      }
+    });
+
     socket.on("disconnect", async () => {
       if (userSockets.has(socket.id)) {
         const user = users.get(userSockets.get(socket.id));
