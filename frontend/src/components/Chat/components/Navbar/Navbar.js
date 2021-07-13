@@ -41,7 +41,18 @@ const Navbar = () => {
         onClick={() => setShowProfileOptions(!showProfileOptions)}
         id="profile-menu"
       >
-        <img width="40" height="40" src={user.avatar} alt="Avatar" />
+        <img
+          width="40"
+          height="40"
+          src={
+            user.avatar
+              ? user.avatar
+              : user.gender === "male"
+              ? `../../../../assets/images/male.svg`
+              : `../../../../assets/images/female.svg`
+          }
+          alt="Avatar"
+        />
         <p>
           {user.firstName} {user.lastName}
         </p>

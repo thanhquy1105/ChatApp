@@ -24,7 +24,13 @@ const Friend = ({ chat, click }) => {
         <img
           width="40"
           height="40"
-          src={chat.Users[0].avatar}
+          src={
+            chat.Users[0].avatar
+              ? chat.Users[0].avatar
+              : chat.Users[0].gender === "male"
+              ? `../../../../assets/images/male.svg`
+              : `../../../../assets/images/female.svg`
+          }
           alt="User avatar"
         />
         <div className="friend-info">
