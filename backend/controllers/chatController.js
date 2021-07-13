@@ -40,6 +40,12 @@ exports.index = async (req, res) => {
       ],
     });
 
+    user.Chats.forEach((chat) => {
+      chat.Users.forEach((user) => {
+        delete user.dataValues.password;
+      });
+    });
+
     return res.json(user.Chats);
   } catch (err) {
     return res.status(500).json({ status: "Error", message: e.message });
@@ -105,28 +111,59 @@ exports.create = async (req, res) => {
 
     await t.commit();
 
-    const newChat = await Chat.findOne({
+    // const newChat = await Chat.findOne({
+    //   where: {
+    //     id: chat.id,
+    //   },
+    //   include: [
+    //     {
+    //       model: User,
+    //       where: {
+    //         [Op.not]: {
+    //           id: req.user.id,
+    //         },
+    //       },
+    //     },
+    //     {
+    //       model: Message,
+    //     },
+    //   ],
+    // });
+
+    const creator = await User.findOne({
       where: {
-        id: chat.id,
+        id: req.user.id,
       },
-      include: [
-        {
-          model: User,
-          where: {
-            [Op.not]: {
-              id: req.user.id,
-            },
-          },
-        },
-        {
-          model: Message,
-        },
-      ],
     });
 
+    delete creator.dataValues.password;
+
+    const partner = await User.findOne({
+      where: {
+        id: partnerId,
+      },
+    });
+
+    delete partner.dataValues.password;
+
+    const forCreator = {
+      id: chat.id,
+      type: "dual",
+      Users: [partner],
+      Messages: [],
+    };
+
+    const forReceiver = {
+      id: chat.id,
+      type: "dual",
+      Users: [creator],
+      Messages: [],
+    };
+
     //delete newChat.Users.password;
-    return res.json(newChat);
+    return res.json([forCreator, forReceiver]);
   } catch (e) {
+    console.log(e.message);
     await t.rollback();
     return res.status(500).json({ status: "Error", message: e.message });
   }

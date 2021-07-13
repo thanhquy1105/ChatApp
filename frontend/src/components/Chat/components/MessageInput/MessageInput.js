@@ -122,7 +122,6 @@ const MessageInput = ({ chat }) => {
       msgBox.scrollHeight !== msgBox.clientHeight
     ) {
       if (msgBox.scrollTop > msgBox.scrollHeight * 0.3) {
-        console.log(123);
         dispatch(incrementScroll());
       } else {
         setShowNewMessageNotification(true);

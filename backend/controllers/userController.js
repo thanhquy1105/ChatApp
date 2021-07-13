@@ -55,6 +55,10 @@ exports.search = async (req, res, next) => {
       limit: 10,
     });
 
+    users.forEach((user) => {
+      delete user.dataValues.password;
+    });
+
     return res.json(users);
   } catch (e) {
     return res.status(500).json({ error: e.message });

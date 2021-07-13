@@ -90,6 +90,34 @@ const SocketServer = (server) => {
       } catch (e) {}
     });
 
+    socket.on("typing", (message) => {
+      message.toUserId.forEach((id) => {
+        if (users.has(id)) {
+          users.get(id).sockets.forEach((socket) => {
+            io.to(socket).emit("typing", message);
+          });
+        }
+      });
+    });
+
+    socket.on("add-friend", (chats) => {
+      try {
+        if (users.has(chats[0].Users[0].id)) {
+          chats[0].Users[0].status = "online";
+
+          chats[1].Users[0].status = "online";
+
+          users.get(chats[0].Users[0].id).sockets.forEach((socket) => {
+            io.to(socket).emit("new-chat", chats[1]);
+          });
+        } else chats[0].Users[0].status = "offline";
+
+        users.get(chats[1].Users[0].id).sockets.forEach((socket) => {
+          io.to(socket).emit("new-chat", chats[0]);
+        });
+      } catch (e) {}
+    });
+
     socket.on("disconnect", async () => {
       if (userSockets.has(socket.id)) {
         const user = users.get(userSockets.get(socket.id));
@@ -121,16 +149,6 @@ const SocketServer = (server) => {
           users.delete(user.id);
         }
       }
-    });
-
-    socket.on("typing", (message) => {
-      message.toUserId.forEach((id) => {
-        if (users.has(id)) {
-          users.get(id).sockets.forEach((socket) => {
-            io.to(socket).emit("typing", message);
-          });
-        }
-      });
     });
   });
 };

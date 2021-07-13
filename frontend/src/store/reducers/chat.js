@@ -9,6 +9,7 @@ import {
   SENDER_TYPING,
   PAGINATE_MESSAGES,
   INCREMENT_SCROLL,
+  CREATE_CHAT,
 } from "../actions/chat";
 
 const initialState = {
@@ -24,12 +25,27 @@ const chatReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case FETCH_CHATS:
+    case FETCH_CHATS: {
+      var chatsCopy = payload;
+
+      chatsCopy.sort(function (x, y) {
+        let chat1 =
+          x.Messages.length !== 0
+            ? x.Messages[x.Messages.length - 1].createdAt
+            : x.createdAt;
+        let chat2 =
+          y.Messages.length !== 0
+            ? y.Messages[y.Messages.length - 1].createdAt
+            : y.createdAt;
+
+        return chat1 > chat2 ? -1 : 1;
+      });
+
       return {
         ...state,
-        chats: payload,
+        chats: chatsCopy,
       };
-
+    }
     case SET_CURRENT_CHAT:
       return {
         ...state,
@@ -168,6 +184,10 @@ const chatReducer = (state = initialState, action) => {
         return chat;
       });
 
+      chatsCopy.sort(function (x, y) {
+        return x.id === message.chatId ? -1 : y.id === message.chatId ? 1 : 0;
+      });
+
       if (scrollBottom === state.scrollBottom) {
         return {
           ...state,
@@ -239,6 +259,12 @@ const chatReducer = (state = initialState, action) => {
         ...state,
         scrollBottom: state.scrollBottom + 1,
         newMessage: { chatId: null, seen: true },
+      };
+
+    case CREATE_CHAT:
+      return {
+        ...state,
+        chats: [...[payload], ...state.chats],
       };
 
     default: {
